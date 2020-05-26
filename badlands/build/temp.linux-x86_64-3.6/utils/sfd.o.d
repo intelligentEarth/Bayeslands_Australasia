@@ -1,0 +1,2 @@
+build/temp.linux-x86_64-3.6/utils/sfd.o: utils/sfd.c
+commandline: -Ibuild/src.linux-x86_64-3.6/build/src.linux-x86_64-3.6/utils -I/usr/local/lib/python3.6/dist-packages/numpy-1.18.2-py3.6-linux-x86_64.egg/numpy/core/include -I/usr/include/python3.6m -c-Ibuild/src.linux-x86_64-3.6/build/src.linux-x86_64-3.6/utils -I/usr/local/lib/python3.6/dist-packages/numpy-1.18.2-py3.6-linux-x86_64.egg/numpy/core/include -I/usr/include/python3.6m
