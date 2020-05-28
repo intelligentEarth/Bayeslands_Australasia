@@ -11,7 +11,7 @@ import numpy as np
 from badlands.model import Model as badlandsModel
 import pickle
 
-def problem_setup(problem = 1):
+def ProblemSetup():
     
     #Randomize seed value. Run with new seed every time.
     random.seed(time.time()) 
