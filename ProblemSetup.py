@@ -57,7 +57,7 @@ def ProblemSetup():
     rain_maxlimits = np.repeat(rain_max, rain_regiongrid*rain_timescale) 
 
     #--------------------------------------------------------
-    parameters_fixed = True
+    parameters_fixed = False
 
     if parameters_fixed:
         minlimits_others = [1.e-6, 0.5, 1.0, 0.005, 0.001, 0.001, 0.5, 5, 24000, 5, 0.01, 0]  # used for Bayeslands environmental params  (stage 2) 
