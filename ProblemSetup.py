@@ -17,7 +17,7 @@ def ProblemSetup():
     random.seed(time.time()) 
 
     directory = 'Examples/australia/'
-    xml_filepath = directory + 'AUSP1307.xml'
+    xml_filepath = directory + 'AUSB001.xml'
     init_topo_expert = np.loadtxt(directory + 'data/init_topo_fused.txt')  # no expert knowledge as simulated init topo    
     init_topo_estimate = []  #init_topo_estimate = #np.loadtxt(directory + 'init_expertknowlegeprocess/init_estimated.txt')
 
@@ -32,7 +32,7 @@ def ProblemSetup():
     true_elev_pts = np.loadtxt(directory +'data/elev_pts_updated.txt')
     true_erdp_pts = np.loadtxt(directory +'data/final_erdp_pts_.txt')
 
-    sea_level = np.loadtxt(directory+ 'AUSP1307/Sea_level/Haq_87_Muller2018_M6.csv')  
+    sea_level = np.loadtxt(directory+ 'AUSB001/Sea_level/Haq_87_Muller2018_M6.csv')  
 
     erdp_coords = np.loadtxt(directory +"data/erdp_coords.txt", )   
     print('No. of points for erosion deposition likl (erdp_coords): ', erdp_coords.shape)

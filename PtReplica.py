@@ -294,9 +294,6 @@ class PtReplica(multiprocessing.Process):
         erodep_pts_vec = collections.OrderedDict()
         elev_pts_vec = collections.OrderedDict()
 
-
-
-
         model.run_to_time(-1.489999e08, muted = True)
         elev_, erodep_ = self.interpolateArray(model.FVmesh.node_coords[:, :2], model.elevation, model.cumdiff) 
 
