@@ -209,8 +209,6 @@ class PtReplica(multiprocessing.Process):
         #Runs a badlands model with the specified inputs
 
         print(self.real_elev.shape, ' real evel sh')
-
-
         print(self.real_elev_pts.shape, ' real evel pt sh')
  
         rain_regiontime = self.rain_region * self.rain_time # number of parameters for rain based on  region and time 

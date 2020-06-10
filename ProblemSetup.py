@@ -32,7 +32,7 @@ def ProblemSetup():
     true_elev_pts = np.loadtxt(directory +'data/elev_pts_updated.txt')
     true_erdp_pts = np.loadtxt(directory +'data/final_erdp_pts_.txt')
 
-    sea_level = np.loadtxt(directory+ 'AUSB001/Sea_level/Haq_87_Muller2018_M6.csv')  
+    sea_level = np.loadtxt(directory+ 'AUSB001/Sea_level/Muller2018_M6.csv')  
 
     erdp_coords = np.loadtxt(directory +"data/erdp_coords.txt", )   
     print('No. of points for erosion deposition likl (erdp_coords): ', erdp_coords.shape)

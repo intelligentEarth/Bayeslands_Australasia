@@ -54,10 +54,11 @@ from IPython.display import HTML
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 from scipy.ndimage import filters 
 from scipy.ndimage import gaussian_filter
-from problem_setup import problem_setup
+from ProblemSetup import ProblemSetup
 import subprocess
 # from dbfpy import dbf
-from process_Uplift import edit_Uplift, process_Uplift 
+from GenUplift import edit_Uplift, process_Uplift
+from GenInitTopo import process_inittopoGMT, edit_DBF
 
 
 #Initialise and parse inputs
@@ -957,18 +958,18 @@ class results_visualisation:
         dzreg = np.reshape(dzi,(ny,nx))
         return zreg,dzreg
 
-    def run_badlands(self, input_vector, lhood_type):
+    def run_badlands(self, input_vector):
         #Runs a badlands model with the specified inputs
 
         print(self.real_elev.shape, ' real evel sh')
+ 
         rain_regiontime = self.rain_region * self.rain_time # number of parameters for rain based on  region and time 
 
         #Create a badlands model instance
         model = badlandsModel()
 
-        # xml_id = int(input_vector[11]/10)
         if uplift == 1:
-            xml_id = int(input_vector[11]/10)
+            xml_id = int(self.ID)
         else:
             xml_id = 0
 
@@ -976,21 +977,15 @@ class results_visualisation:
 
         xmlinput = self.input[xml_id]
 
-        print(self.run_nb_str, xmlinput, ' self.run_nb_str')
-
         #----------------------------------------------------------------
         # Load the XmL input file
-        model.load_xml(str(self.run_nb_str), xmlinput, verbose =False, muted = False)
-        
-        init = False
+        model.load_xml(str(self.run_nb), xmlinput, verbose =False, muted = False)
 
         num_sealevel_coef = 10
 
-        if init == True:
+        if inittopo == 1:
 
-            geoparam  = num_sealevel_coef + rain_regiontime+12  # note 10 parameter space is for erod, c-marine etc etc, some extra space ( taking out time dependent rainfall)
-
-
+            geoparam  = num_sealevel_coef + rain_regiontime+13  # note 10 parameter space is for erod, c-marine etc etc, some extra space ( taking out time dependent rainfall)
             inittopo_vec = input_vector[geoparam:]
 
             filename=xmlinput.split("/")
@@ -1006,17 +1001,17 @@ class results_visualisation:
             # dummy_file = pd.read_csv('AUS/upliftvariables.txt')
             # edit_Uplift(self.ID, dummy_file)
             # process_Uplift(self.ID)
-
-            # self.process_inittopoGMT(inittopo_vec)  
-            #init_filename='init_topo_polygon/Paleotopo_P100_50km_prec2_'+ str(int(self.ID)) +'.csv'  
-            init_filename='init_topo_polygon/Paleotopo_P100_50km_prec2_'+lhood_type+'.csv' 
+ 
+            self.process_inittopoGMT(inittopo_vec)  
+            init_filename='init_topo_polygon/Paleotopo_P100_50km_prec2_'+ str(int(self.ID)) +'.csv' 
+            # upl_filename = 'AUS/%s/AUS001.xml'%(self.ID)
+            #elev_framex = np.vstack((model.recGrid.rectX,model.recGrid.rectY,inittopo_estimate.flatten()))
+            #np.savetxt(filename, elev_framex.T, fmt='%1.2f' ) 
+            
             model.input.demfile=init_filename
 
-            model.build_mesh(model.input.demfile, verbose=False)
-
-        # Adjust precipitation values based on given parameter
-        #print(input_vector[0:rain_regiontime] )
-        # model.force.rainVal  = input_vector[0:rain_regiontime-1] 
+            model._build_mesh(model.input.demfile, verbose=False)
+ 
 
         # Adjust erodibility based on given parameter
         model.input.SPLero = input_vector[rain_regiontime]  
@@ -1031,35 +1026,28 @@ class results_visualisation:
         model.input.CDm = input_vector[rain_regiontime+3] # submarine diffusion
         model.input.CDa = input_vector[rain_regiontime+4] # aerial diffusion
 
-        if problem != 1:
-            model.slp_cr = input_vector[rain_regiontime+5]
-            model.perc_dep = input_vector[rain_regiontime+6]
-            model.input.criver = input_vector[rain_regiontime+7]
-            model.input.elasticH = input_vector[rain_regiontime+8]
-            model.input.diffnb = input_vector[rain_regiontime+9]
-            model.input.diffprop = input_vector[rain_regiontime+10]
+        model.slp_cr = input_vector[rain_regiontime+5]
+        model.perc_dep = input_vector[rain_regiontime+6]
+        model.input.criver = input_vector[rain_regiontime+7]
+        model.input.elasticH = input_vector[rain_regiontime+8]
+        model.input.diffnb = input_vector[rain_regiontime+9]
+        model.input.diffprop = input_vector[rain_regiontime+10]
 
+        sealevel_coeff = input_vector[rain_regiontime+12 : rain_regiontime+12+ num_sealevel_coef] 
 
-        sealevel_coeff = input_vector[rain_regiontime+10 : rain_regiontime+10+ num_sealevel_coef] 
- 
- 
+        print(sealevel_coeff, ' sealevel_coeff ')
 
-        # model.input.curve = self.process_sealevel(sealevel_coeff)
+        model.input.curve = self.process_sealevel(sealevel_coeff)
  
         elev_vec = collections.OrderedDict()
         erodep_vec = collections.OrderedDict()
         erodep_pts_vec = collections.OrderedDict()
         elev_pts_vec = collections.OrderedDict()
 
-
-
-
         model.run_to_time(-1.489999e08, muted = False)
         elev_, erodep_ = self.interpolateArray(model.FVmesh.node_coords[:, :2], model.elevation, model.cumdiff) 
 
-     
-
-
+        self.init_show(elev_, '/pred_plots/GMTinit_', self.ID )   
 
         for x in range(len(self.sim_interval)):
             self.simtime = self.sim_interval[x]
@@ -1076,7 +1064,7 @@ class results_visualisation:
             for count, val in enumerate(self.elev_coords):
                 elev_pts[count] = elev[val[0], val[1]]
  
- 
+            print('Sim time: ', self.simtime  , "   Temperature: ", self.temperature)
             elev_vec[self.simtime] = elev
             erodep_vec[self.simtime] = erodep
             erodep_pts_vec[self.simtime] = erodep_pts
@@ -1084,114 +1072,6 @@ class results_visualisation:
  
         return elev_vec, erodep_vec, erodep_pts_vec, elev_pts_vec
 
-    '''def run_badlands_(self, input_vector, lhood_type, muted = False):
-        #Runs a badlands model with the specified inputs
-        rain_regiontime = self.rain_region * self.rain_time # number of parameters for rain based on  region and time 
-
-        #Create a badlands model instance
-        model = badlandsModel()
-
-        #----------------------------------------------------------------
-        # Load the XmL input file
-        model.load_xml(str(self.run_nb_str), self.input, muted=muted)
-
-        init = True
-
-        num_sealevel_coef = 10
-
-        if init == True:
-
-            geoparam  = num_sealevel_coef + rain_regiontime+11  # note 10 parameter space is for erod, c-marine etc etc, some extra space ( taking out time dependent rainfall)
-
-
-            inittopo_vec = input_vector[geoparam:]
-
-            filename=self.input.split("/")
-            problem_folder=filename[0]+"/"+filename[1]+"/"
-
-            #Use the coordinates from the original dem file
-            #Update the initial topography 
-            xi=int(np.shape(model.recGrid.rectX)[0]/model.recGrid.nx)
-            yi=int(np.shape(model.recGrid.rectY)[0]/model.recGrid.ny)
-            #And put the demfile on a grid we can manipulate easily
-            elev=np.reshape(model.recGrid.rectZ,(xi,yi)) 
-
-            self.process_inittopoGMT(inittopo_vec,lhood_type)  
-            filename='init_topo_polygon/Paleotopo_P100_50km_prec2_'+lhood_type+'.csv'  
-
-            model.input.demfile=filename 
-            model.build_mesh(model.input.demfile, verbose=False)
-
-        # Adjust precipitation values based on given parameter
-        #print(input_vector[0:rain_regiontime] )
-        model.force.rainVal  = input_vector[0:rain_regiontime-1] 
-
-        # Adjust erodibility based on given parameter
-        model.input.SPLero = input_vector[rain_regiontime]  
-        model.flow.erodibility.fill(input_vector[rain_regiontime ] )
-
-        # Adjust m and n values
-        model.input.SPLm = input_vector[rain_regiontime+1]  
-        model.input.SPLn = input_vector[rain_regiontime+2] 
-
-        #Check if it is the etopo extended problem
-        #if problem == 4 or problem == 3:  # will work for more parameters
-        model.input.CDm = input_vector[rain_regiontime+3] # submarine diffusion
-        model.input.CDa = input_vector[rain_regiontime+4] # aerial diffusion
-
-        if problem != 1:
-            model.slp_cr = input_vector[rain_regiontime+5]
-            model.perc_dep = input_vector[rain_regiontime+6]
-            model.input.criver = input_vector[rain_regiontime+7]
-            model.input.elasticH = input_vector[rain_regiontime+8]
-            model.input.diffnb = input_vector[rain_regiontime+9]
-            model.input.diffprop = input_vector[rain_regiontime+10]
-
-
-        sealevel_coeff = input_vector[rain_regiontime+10 : rain_regiontime+10+ num_sealevel_coef] 
-        model.input.curve = self.process_sealevel(sealevel_coeff)
- 
-        elev_vec = collections.OrderedDict()
-        erodep_vec = collections.OrderedDict()
-        erodep_pts_vec = collections.OrderedDict()
-        elev_pts_vec = collections.OrderedDict()
-
-        # model.run_to_time(-1.489999e08, muted=True)
-        # elev_, erodep_ = interpolateArray(model.FVmesh.node_coords[:, :2], model.elevation, model.cumdiff) 
-
-        # self.plot3d_plotly(elev_, lhood_type )  
-
-
-        for x in range(len(self.sim_interval)):
- 
- 
-            self.simtime = self.sim_interval[x]
-            model.run_to_time(self.simtime, muted=muted)
-            print(x, ' is time in Badlands')
-
-            elev, erodep = interpolateArray(model.FVmesh.node_coords[:, :2], model.elevation, model.cumdiff)
-
-            erodep_pts = np.zeros(self.erodep_coords.shape[0])
-            elev_pts = np.zeros(self.elev_coords.shape[0])
-
-            for count, val in enumerate(self.erodep_coords):
-                erodep_pts[count] = erodep[val[0], val[1]]
-
-            for count, val in enumerate(self.elev_coords):
-                elev_pts[count] = elev[val[0], val[1]]
- 
- 
-            elev_vec[self.simtime] = elev
-            erodep_vec[self.simtime] = erodep
-            erodep_pts_vec[self.simtime] = erodep_pts
-            elev_pts_vec[self.simtime] = elev_pts
-
-        
-        likelihood_elev_ocean = 0
-        rmse_ocean = np.zeros(self.sim_interval.size)
-        i = 0
-
-        return elev_vec, erodep_vec, erodep_pts_vec, elev_pts_vec'''
 
     def viewGrid(self, width=1000, height=1000, zmin=None, zmax=None, zData=None, title='Predicted Topography', time_frame=None, filename=None):
         filename= self.folder +  '/pred_plots'+ '/pred_'+filename+'_'+str(time_frame)+ '_.png'
@@ -1249,9 +1129,9 @@ def main():
     random.seed(time.time()) 
 
     (problemfolder, xmlinput, simtime, resolu_factor, sea_level, init_elev, groundtruth_elev, groundtruth_erodep,
-    groundtruth_erodep_pts, groundtruth_elev_pts, res_summaryfile, inittopo_expertknow, len_grid, wid_grid, simtime, 
-    resolu_factor, likelihood_sediment, rain_min, rain_max, rain_regiongrid, minlimits_others,
-    maxlimits_others, stepsize_ratio, erodep_coords,elev_coords, inittopo_estimated, vec_parameters, minlimits_vec, maxlimits_vec) = problem_setup(problem)
+    groundtruth_erodep_pts, groundtruth_elev_pts, res_summaryfile, inittopo_expertknow, len_grid, wid_grid, likelihood_sediment,
+    rain_min, rain_max, rain_regiongrid, minlimits_others, maxlimits_others, stepsize_ratio, erodep_coords,elev_coords, inittopo_estimated,
+    vec_parameters, minlimits_vec, maxlimits_vec) = ProblemSetup()
 
     rain_timescale = rain_intervals  # to show climate change 
     '''rain_minlimits = np.repeat(rain_min, rain_regiongrid*rain_timescale)
@@ -1436,8 +1316,8 @@ def main():
     np.savetxt('variables_er.txt', variables_er)
 
 
-    pred_elev_opt, pred_erodep_opt, pred_erodep_pts_opt, pred_elev_pts_opt = res.run_badlands(error_dict[min(error_dict)],  'optimal_elev')
-    pred_elev_opt_sed, pred_erodep_opt_sed, pred_erodep_pts_opt_sed, pred_elev_pts_opt_sed = res.run_badlands(error_dict_er[min(error_dict_er)], 'optimal_sed')
+    pred_elev_opt, pred_erodep_opt, pred_erodep_pts_opt, pred_elev_pts_opt = res.run_badlands(error_dict[min(error_dict)])
+    pred_elev_opt_sed, pred_erodep_opt_sed, pred_erodep_pts_opt_sed, pred_elev_pts_opt_sed = res.run_badlands(error_dict_er[min(error_dict_er)])
     
     # pred_elev_opt, pred_erodep_opt, pred_erodep_pts_opt, pred_elev_pts_opt = res.run_badlands(variables, muted = False)
 
