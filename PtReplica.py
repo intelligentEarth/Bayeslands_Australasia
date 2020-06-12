@@ -416,8 +416,8 @@ class PtReplica(multiprocessing.Process):
 
         pred_elev = pred_elev_vec[self.simtime] 
 
-        real_elev_filtered = np.where((self.real_elev>0) & (self.real_elev<600), self.real_elev, 0)  
-        pred_elev_filtered = np.where((pred_elev>0) & (pred_elev<600), pred_elev, 0)
+        real_elev_filtered = np.where((self.real_elev>0) & (self.real_elev<1000), self.real_elev, 0)  
+        pred_elev_filtered = np.where((pred_elev>0) & (pred_elev<1000), pred_elev, 0)
 
         diff = pred_elev_filtered  - real_elev_filtered
         count = np.count_nonzero(diff) 
@@ -427,7 +427,7 @@ class PtReplica(multiprocessing.Process):
         likelihood_elev  = np.sum(-0.5 * np.log(2 * math.pi * tau_elev ) - 0.5 * np.square(diff) / tau_elev )
         likelihood_erodep  = np.sum(-0.5 * np.log(2 * math.pi * tau_erodep ) - 0.5 * np.square(erdep_predicted - self.real_erodep_pts) / tau_erodep ) # only considers point or core of erodep    
 
-        likelihood_ = likelihood_erodep + (likelihood_elev_ocean/4)
+        likelihood_ = likelihood_elev + likelihood_erodep + (likelihood_elev_ocean/4)
         #rmse_ocean = 0
         rmse_elev = np.sqrt(tau_elev)
         rmse_elev_ocean = np.average(rmse_ocean)
@@ -603,19 +603,19 @@ class PtReplica(multiprocessing.Process):
             # Difference in likelihood from previous accepted proposal
             diff_likelihood = likelihood_proposal - likelihood
 
-            try:
-                # print ('diff_likelihood', diff_likelihood)
-                # print ('math.exp(diff_likelihood)', math.exp(diff_likelihood))
-                mh_prob = min(1, math.exp(diff_likelihood))
-            except OverflowError as e:
-                mh_prob = 1
+            # try:
+            #     # print ('diff_likelihood', diff_likelihood)
+            #     # print ('math.exp(diff_likelihood)', math.exp(diff_likelihood))
+            #     mh_prob = min(1, math.exp(diff_likelihood))
+            # except OverflowError as e:
+            #     mh_prob = 1
 
-            u = random.uniform(0,1)
+            u = np.log(random.uniform(0,1))
             
             accept_list[i+1] = num_accepted
             likeh_list[i+1,0] = likelihood_proposal
 
-            if u < mh_prob: # Accept sample
+            if u < diff_likelihood: # Accept sample
                 # Append sample number to accepted list
                 count_list.append(i)            
                 
