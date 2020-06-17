@@ -100,8 +100,6 @@ method = 1 # type of formaltion for inittopo construction (Method 1 showed bette
 class results_visualisation:
 
     def __init__(self, vec_parameters, sea_level, ocean_t, inittopo_expertknow, inittopo_estimated, rain_regiongrid, rain_timescale, len_grid,  wid_grid, num_chains, maxtemp, samples,swap_interval,fname, num_param  ,  groundtruth_elev,  groundtruth_erodep_pts , erodep_coords, elev_coords, simtime, sim_interval, resolu_factor,  xmlinput,  run_nb_str, init_elev ):
-
-   
         self.swap_interval = swap_interval
         self.folder = fname
         self.maxtemp = maxtemp
@@ -125,7 +123,7 @@ class results_visualisation:
         self.vec_parameters = vec_parameters
         #self.realvalues  =  realvalues_vec 
         self.burn_in = burn_in
-        self.input = ['Examples/australia/AUSP1400.xml','Examples/australia/AUSP1309.xml', 'Examples/australia/AUSP1310.xml',
+        self.input = ['Examples/australia/AUSB001.xml','Examples/australia/AUSP1307.xml', 'Examples/australia/AUSP1310.xml',
         'Examples/australia/AUSP1311.xml','Examples/australia/AUSP1312.xml', 'Examples/australia/AUSP1313.xml', 'Examples/australia/AUSP1314.xml',
         'Examples/australia/AUSP1315.xml']
         # create queues for transfer of parameters between process chain
@@ -139,10 +137,16 @@ class results_visualisation:
         self.inittopo_estimated = inittopo_estimated
         self.init_elev = init_elev
         self.ocean_t = ocean_t
-
         self.Bayes_inittopoknowledge = True
-
         self.sea_level = sea_level
+
+    def init_show(self, zData, fname, replica_id): 
+ 
+        fig = plt.figure()
+        im = plt.imshow(zData, cmap='hot', interpolation='nearest')
+        plt.colorbar(im)
+        plt.savefig(self.folder + fname+ str(int(replica_id))+'.png')
+        plt.close()
 
     def results_current (self ):
 
@@ -979,7 +983,7 @@ class results_visualisation:
 
         #----------------------------------------------------------------
         # Load the XmL input file
-        model.load_xml(str(self.run_nb), xmlinput, verbose =False, muted = False)
+        model.load_xml(str(self.run_nb_str), xmlinput, verbose =False, muted = False)
 
         num_sealevel_coef = 10
 
@@ -1047,7 +1051,7 @@ class results_visualisation:
         model.run_to_time(-1.489999e08, muted = False)
         elev_, erodep_ = self.interpolateArray(model.FVmesh.node_coords[:, :2], model.elevation, model.cumdiff) 
 
-        self.init_show(elev_, '/pred_plots/GMTinit_', self.ID )   
+        # self.init_show(elev_, '/pred_plots/GMTinit_', self.ID )   
 
         for x in range(len(self.sim_interval)):
             self.simtime = self.sim_interval[x]
@@ -1064,14 +1068,13 @@ class results_visualisation:
             for count, val in enumerate(self.elev_coords):
                 elev_pts[count] = elev[val[0], val[1]]
  
-            print('Sim time: ', self.simtime  , "   Temperature: ", self.temperature)
+            print('Sim time: ', self.simtime )
             elev_vec[self.simtime] = elev
             erodep_vec[self.simtime] = erodep
             erodep_pts_vec[self.simtime] = erodep_pts
             elev_pts_vec[self.simtime] = elev_pts
  
         return elev_vec, erodep_vec, erodep_pts_vec, elev_pts_vec
-
 
     def viewGrid(self, width=1000, height=1000, zmin=None, zmax=None, zData=None, title='Predicted Topography', time_frame=None, filename=None):
         filename= self.folder +  '/pred_plots'+ '/pred_'+filename+'_'+str(time_frame)+ '_.png'
@@ -1169,7 +1172,7 @@ def main():
         filename_ocean = filename_ocean[::-1]
 
     print("Simulation time interval", sim_interval)
-    print()
+    print('\n\nXML INPUT', xmlinput,'\n\n\n')
 
     ocean_t = np.zeros((sim_interval.size,groundtruth_elev.shape[0], groundtruth_elev.shape[1]))
 
