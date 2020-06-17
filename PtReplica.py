@@ -136,7 +136,7 @@ class PtReplica(multiprocessing.Process):
 
         updated_mat = second_mat
 
-        print(coeff, ' coeff -----------------')
+        # print(coeff, ' coeff -----------------')
 
         for l in range(0,second_mat.shape[0]):
             for w in range(0,second_mat.shape[1]): 
@@ -283,7 +283,7 @@ class PtReplica(multiprocessing.Process):
 
         sealevel_coeff = input_vector[rain_regiontime+12 : rain_regiontime+12+ num_sealevel_coef] 
 
-        print(sealevel_coeff, ' sealevel_coeff ')
+        # print(sealevel_coeff, ' sealevel_coeff ')
 
         model.input.curve = self.process_sealevel(sealevel_coeff)
  
@@ -427,6 +427,7 @@ class PtReplica(multiprocessing.Process):
         likelihood_elev  = np.sum(-0.5 * np.log(2 * math.pi * tau_elev ) - 0.5 * np.square(diff) / tau_elev )
         likelihood_erodep  = np.sum(-0.5 * np.log(2 * math.pi * tau_erodep ) - 0.5 * np.square(erdep_predicted - self.real_erodep_pts) / tau_erodep ) # only considers point or core of erodep    
 
+        print('likelihood_elev', likelihood_elev, 'likelihood_erodep', likelihood_erodep,'likelihood_elev_ocean', likelihood_elev_ocean/4 )
         likelihood_ = likelihood_elev + likelihood_erodep + (likelihood_elev_ocean/4)
         #rmse_ocean = 0
         rmse_elev = np.sqrt(tau_elev)
@@ -484,7 +485,7 @@ class PtReplica(multiprocessing.Process):
         fig, ax =  plt.subplots() 
         y = self.sealevel_data[:,1]
 
-        print(y, ' sea_level')
+        # print(y, ' sea_level')
 
         fnameplot = self.folder +  '/recons_initialtopo/'+'sealevel_data.png' 
         ax.plot(x, y)

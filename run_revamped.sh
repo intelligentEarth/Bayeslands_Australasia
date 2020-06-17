@@ -5,7 +5,7 @@ echo Running Revamped
 problem=2
 replica=8
 
-samples=400
+samples=80
 swapint=2
 maxtemp=2  
 burn=0.1
@@ -18,7 +18,7 @@ uplift=0
 
 
   
-# python PT.py -p $problem -s $samples -r $replica -t $maxtemp -swap $swapint -b $burn -pt $pt_stage  -epsilon $initialtopoep -rain_intervals $raintimeint -inittopo $inittopo -uplift $uplift
+python PT.py -p $problem -s $samples -r $replica -t $maxtemp -swap $swapint -b $burn -pt $pt_stage  -epsilon $initialtopoep -rain_intervals $raintimeint -inittopo $inittopo -uplift $uplift
 python visualise.py -p $problem -s $samples -r $replica -t $maxtemp -swap $swapint -b $burn -pt $pt_stage  -epsilon $initialtopoep -rain_intervals $raintimeint -inittopo $inittopo -uplift $uplift
   
 
