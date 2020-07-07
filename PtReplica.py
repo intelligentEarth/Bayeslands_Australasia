@@ -258,12 +258,13 @@ class PtReplica(multiprocessing.Process):
             
             model.input.demfile=init_filename
 
-            model._build_mesh(model.input.demfile, verbose=False)
- 
+            model._build_mesh(model.input.demfile, verbose=False) 
+
+        model.force.rainVal[:] = input_vector[0:rain_regiontime] 
 
         # Adjust erodibility based on given parameter
         model.input.SPLero = input_vector[rain_regiontime]  
-        model.flow.erodibility.fill(input_vector[rain_regiontime ] )
+        model.flow.erodibility.fill(input_vector[rain_regiontime])
 
         # Adjust m and n values
         model.input.SPLm = input_vector[rain_regiontime+1]  
@@ -346,7 +347,7 @@ class PtReplica(multiprocessing.Process):
 
         likelihood_elev_ocean = 0
         rmse_ocean = np.zeros(self.sim_interval.size)
-        pred_topo_presentday = pred_elev_vec[self.simtime] 
+        pred_topo_present_day = pred_elev_vec[self.simtime] 
         pred_elev_vec_ = copy.deepcopy(pred_elev_vec) #pred_elev_vec.copy()
         #for i in range(6,self.sim_interval.size): #this caters for first half
 
@@ -437,7 +438,7 @@ class PtReplica(multiprocessing.Process):
 
         likelihood = likelihood_*(1.0/self.adapttemp)
 
-        pred_topo_presentday = pred_elev_vec[self.simtime]
+        pred_topo_present_day = pred_elev_vec[self.simtime]
         #self.plot3d_plotly(pred_topo_presentday, '/pred_plots/pred_badlands_', self.temperature *10)    # Problem exists here XXXXXXX
 
         print('LIKELIHOOD :--: Elev: ',likelihood_elev, '\tErdp: ', likelihood_erodep, '\tOcean:',likelihood_elev_ocean,'\tTotal: ', likelihood_, likelihood)
@@ -751,4 +752,3 @@ class PtReplica(multiprocessing.Process):
 
             file_name = self.folder + '/posterior/predicted_topo/topo/chain_' + str(k) + '_' + str(self.temperature) + '.txt'
             np.savetxt(file_name, mean_pred_elevation, fmt='%.2f')
- 

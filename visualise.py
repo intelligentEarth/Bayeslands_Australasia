@@ -327,7 +327,6 @@ class results_visualisation:
             plt.xlabel(' Distance (x 50 km)  ', fontsize = size)
             plt.ylabel(' Height (m)', fontsize = size)
             plt.tight_layout()
-              
             plt.savefig(self.folder+'/cross_section/'+str(i)+'_cross-sec_postcompare.pdf')
             plt.clf()
 
