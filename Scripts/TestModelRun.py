@@ -43,10 +43,10 @@ def interpolateArray(coords=None, z=None, dz=None):
 
 def main():
     model = badlandsModel()
-    model.load_xml('Output','AUSB001.xml', muted = False)
+    model.load_xml('Output','Examples/australia_gda94/AUSB004.xml', muted = False)
     model.run_to_time(0, muted = False)
     elev, erdp = interpolateArray(model.FVmesh.node_coords[:, :2], model.elevation, model.cumdiff)
-    np.savetxt("data/testrun_final_elev.txt", elev)
-    np.savetxt("data/testrun_final_erdp.txt", erdp)
+    np.savetxt("Examples/australia/data/testrun_final_elev.txt", elev)
+    np.savetxt("Examples/australia/data/testrun_final_erdp.txt", erdp)
 
 if __name__ == "__main__": main()

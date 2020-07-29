@@ -16,7 +16,7 @@ def ProblemSetup():
     #Randomize seed value. Run with new seed every time.
     random.seed(time.time()) 
 
-    directory = 'Examples/australia/'
+    directory = 'Examples/australia_gda94/'
     xml_filepath = directory + 'AUSB001.xml'
     init_topo_expert = np.loadtxt(directory + 'data/init_topo_fused.txt')  # no expert knowledge as simulated init topo    
     init_topo_estimate = []  #init_topo_estimate = #np.loadtxt(directory + 'init_expertknowlegeprocess/init_estimated.txt')
