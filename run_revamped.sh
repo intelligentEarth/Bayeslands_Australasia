@@ -2,10 +2,10 @@
 #!/bin/bash  
 echo Running Revamped 	 
 
-problem=2
+problem=1
 replica=8
 
-samples=80
+samples=56
 swapint=2
 maxtemp=2  
 burn=0.1

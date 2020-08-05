@@ -205,6 +205,28 @@ class PtReplica(multiprocessing.Process):
         dzreg = np.reshape(dzi,(ny,nx))
         return zreg,dzreg
 
+    def vector_dump(self, pred_elev_vec, pred_erodep_vec, pred_erodep_pts_vec, pred_elev_pts_vec):
+        x =self.folder + "/realtime_data/" +str(self.ID)  + "/pred_elev_vec.pkl" 
+        np.save(self.folder + "/realtime_data/" +str(self.ID)  + "/real_erodep_pts_vec.npy", self.real_elev_pts) # save
+
+        f = open(x,"wb")
+        pickle.dump(pred_elev_vec,f)
+        f.close()
+
+        g = open(self.folder + "/realtime_data/" +str(self.ID)  + "/pred_erodep_pts_vec.pkl", "wb") # save
+        pickle.dump(pred_erodep_pts_vec,g)
+        g.close()
+
+        h = open(self.folder + "/realtime_data/" +str(self.ID)  + "/pred_elev_pts_vec.pkl","wb") # save
+        pickle.dump(pred_elev_pts_vec,h)
+        h.close()
+
+        z = open(self.folder + "/realtime_data/" +str(self.ID)  + "/pred_erodep_vec.pkl","wb")
+        pickle.dump(pred_erodep_vec,z)
+        z.close()
+
+        return
+
     def run_badlands(self, input_vector):
         #Runs a badlands model with the specified inputs
 
@@ -324,26 +346,8 @@ class PtReplica(multiprocessing.Process):
     def likelihood_func(self,input_vector): 
 
         pred_elev_vec, pred_erodep_vec, pred_erodep_pts_vec, pred_elev_pts_vec = self.run_badlands(input_vector)
-
-        x =self.folder + "/realtime_data/" +str(self.ID)  + "/pred_elev_vec.pkl" 
-      
-        np.save(self.folder + "/realtime_data/" +str(self.ID)  + "/real_erodep_pts_vec.npy", self.real_elev_pts) # save
-
-        f = open(x,"wb")
-        pickle.dump(pred_elev_vec,f)
-        f.close()
-
-        g = open(self.folder + "/realtime_data/" +str(self.ID)  + "/pred_erodep_pts_vec.pkl", "wb") # save
-        pickle.dump(pred_erodep_pts_vec,g)
-        g.close()
-
-        h = open(self.folder + "/realtime_data/" +str(self.ID)  + "/pred_elev_pts_vec.pkl","wb") # save
-        pickle.dump(pred_elev_pts_vec,h)
-        h.close()
-
-        z = open(self.folder + "/realtime_data/" +str(self.ID)  + "/pred_erodep_vec.pkl","wb")
-        pickle.dump(pred_erodep_vec,z)
-        z.close()
+        
+        self.vector_dump(pred_elev_vec, pred_erodep_vec, pred_erodep_pts_vec, pred_elev_pts_vec)
 
         likelihood_elev_ocean = 0
         rmse_ocean = np.zeros(self.sim_interval.size)
@@ -392,11 +396,12 @@ class PtReplica(multiprocessing.Process):
             rmse_ocean[i] = tausq_ocean
             likelihood_elev_ocean  += np.sum(-0.5 * np.log(2 * math.pi * tausq_ocean) - 0.5 * np.square(p_elev_ocean - r_elev_ocean) /  tausq_ocean )
 
-        '''fig = plt.figure()
+        '''
+        fig = plt.figure()
         plt.imshow(self.real_erodep_pts, cmap='hot', interpolation='nearest')
         plt.savefig(self.folder +'/realtime_plots/' + str(self.ID) + '/'+ str(self.sim_interval[i]) +'real_erodep.png')
-        plt.close()'''
-        
+        plt.close()
+        '''
         fig = plt.figure()
         im = plt.imshow(self.real_elev, cmap='hot', interpolation='nearest')
         plt.colorbar(im)
@@ -448,7 +453,6 @@ class PtReplica(multiprocessing.Process):
         return [likelihood, pred_elev_vec, pred_erodep_pts_vec, likelihood, rmse_elev_pts, rmse_erodep, rmse_ocean, rmse_elev_ocean ]
 
     def run(self):
-
         #This is a chain that is distributed to many cores. AKA a 'Replica' in Parallel Tempering
 
         self.init_show(self.real_elev, '/recons_initialtopo/real_evel', 1)

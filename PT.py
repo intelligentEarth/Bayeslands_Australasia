@@ -496,6 +496,13 @@ def main():
 
     print('\n\ngroundtruth_elev_pts[0]',groundtruth_elev_pts[0],'\n\n')
 
+    print(groundtruth_elev.shape)
+    print(groundtruth_erodep.shape)
+    print(groundtruth_erodep_pts.shape)
+    print(groundtruth_elev_pts.shape)
+
+    exit
+
     rain_timescale = rain_intervals  # to show climate change 
 
     true_parameter_vec = vec_parameters # just as place value for now, true parameters is not used for plotting 
@@ -541,14 +548,14 @@ def main():
 
     ### 149 MA
     
-    if problem ==1:
-        num_successive_topo = 4 
-        sim_interval = np.arange(0,  simtime+1, simtime/num_successive_topo) # for generating successive topography
-        filename_ocean = np.array([0, 5 , 25 , 30, 40 ])
+    # if problem ==1:
+    #     num_successive_topo = 4 
+    #     sim_interval = np.arange(0,  simtime+1, simtime/num_successive_topo) # for generating successive topography
+    #     filename_ocean = np.array([0, 5 , 25 , 30, 40 ])
 
-    else:
-        sim_interval = np.array([0, -5.0e06 , -25.0e06, -30.0e06,  -40.0e06, -50.0e06 , -75.0e06 , -100.0e06,  -115.0e06, -125.0e06, -1.40e08,  -1.49e08])
-        filename_ocean = np.array([0, 5 , 25 , 30, 40, 50, 75, 100, 115,  125, 140, 149])
+    # else:
+    sim_interval = np.array([0, -5.0e06 , -25.0e06, -30.0e06,  -40.0e06, -50.0e06 , -75.0e06 , -100.0e06,  -115.0e06, -125.0e06, -1.40e08,  -1.49e08])
+    filename_ocean = np.array([0, 5 , 25 , 30, 40, 50, 75, 100, 115,  125, 140, 149])
 
     ### 1 MA 
     # sim_interval = np.array([0, -5.0e04 , -25.0e04, -50.0e04 , -75.0e04 , -100.0e04, -125.0e04, -1.49e06])
@@ -556,7 +563,6 @@ def main():
     #sim_interval = np.array([0, -5.0e04 , -25.0e04, -50.0e04 , -75.0e04 , -100.0e04, -125.0e04, -1.49e05,  -5.49e05,  -0.49e06,  -1.19e06,  -1.49e06])
     #filename_ocean = np.array([0, 5, 25, 50, 75, 100, 125, 149])
  
-
     print ('Simulation time interval before',sim_interval)
     if simtime < 0:
         sim_interval = sim_interval[::-1]
@@ -567,10 +573,9 @@ def main():
 
     ocean_t = np.zeros((sim_interval.size,groundtruth_elev.shape[0], groundtruth_elev.shape[1]))
 
-    if problem ==2: 
-        for i, val in enumerate(filename_ocean): 
-            temp = np.loadtxt(problemfolder+ '/data/ocean/marine_%s.txt' %(val))
-            ocean_t[i,:,:] = temp
+    for i, val in enumerate(filename_ocean): 
+        temp = np.loadtxt(problemfolder+ '/data/ocean/marine_%s.txt' %(val))
+        ocean_t[i,:,:] = temp
 
     # print(ocean_t, 'ocean_t')
 
