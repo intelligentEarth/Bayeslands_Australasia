@@ -16,11 +16,11 @@ def ProblemSetup():
     #Randomize seed value. Run with new seed every time.
     random.seed(time.time()) 
 
-    directory = 'Examples/australia/'
-    # directory = 'Examples/australia_gda94/'
+    # directory = 'Examples/australia/'
+    directory = 'Examples/australia_gda94/'
 
-    xml_filepath = directory + 'AUSB001.xml'
-    # xml_filepath = directory + 'AUSB004.xml'
+    # xml_filepath = directory + 'AUSB001.xml'
+    xml_filepath = directory + 'AUSB004.xml'
 
     init_topo_expert = np.loadtxt(directory + 'data/init_topo_fused.txt')  # no expert knowledge as simulated init topo    
     init_topo_estimate = []  #init_topo_estimate = #np.loadtxt(directory + 'init_expertknowlegeprocess/init_estimated.txt')
@@ -30,18 +30,18 @@ def ProblemSetup():
 
     init_elev = np.loadtxt(directory+ 'data/initial_elev.txt')
     
-    true_elev = np.loadtxt(directory +'data/final_elev_filtered_ocean.txt')
-    # true_elev = np.loadtxt(directory +'data/final_elev.txt')
+    # true_elev = np.loadtxt(directory +'data/final_elev_filtered_ocean.txt')
+    true_elev = np.loadtxt(directory +'data/final_elev.txt')
     
     true_erdp = np.loadtxt(directory +'data/final_erdp.txt')
 
-    true_elev_pts = np.loadtxt(directory +'data/elev_pts_updated.txt')
-    # true_elev_pts = np.loadtxt(directory +'data/final_elev_pts.txt')
-    true_erdp_pts = np.loadtxt(directory +'data/final_erdp_pts_.txt')
-    # true_erdp_pts = np.loadtxt(directory +'data/final_erdp_pts.txt')
+    # true_elev_pts = np.loadtxt(directory +'data/elev_pts_updated.txt')
+    true_elev_pts = np.loadtxt(directory +'data/final_elev_pts.txt')
+    # true_erdp_pts = np.loadtxt(directory +'data/final_erdp_pts_.txt')
+    true_erdp_pts = np.loadtxt(directory +'data/final_erdp_pts.txt')
 
-    sea_level = np.loadtxt(directory+ 'AUSB001/Sea_level/Muller2018_M6.csv')  
-    # sea_level = np.loadtxt(directory+ 'AUSB004/Sea_level/Muller2018_M6.csv')  
+    # sea_level = np.loadtxt(directory+ 'AUSB001/Sea_level/Muller2018_M6.csv')  
+    sea_level = np.loadtxt(directory+ 'AUSB004/Sea_level/Muller2018_M6.csv')  
 
     erdp_coords = np.loadtxt(directory +"data/erdp_coords.txt", )   
     print('No. of points for erosion deposition likl (erdp_coords): ', erdp_coords.shape)

@@ -158,7 +158,7 @@ class PtReplica(multiprocessing.Process):
         ax.plot(timeframes, yhat, label='smoothened')
         ax.legend()
         plt.savefig(fnameplot)
-        plt.clf()    
+        plt.close()    
 
         proposed_sealevel = np.vstack([timeframes, yhat])
 
@@ -462,13 +462,13 @@ class PtReplica(multiprocessing.Process):
         plt.scatter(self.erodep_coords[:,0], self.erodep_coords[:,1], s=2, c = 'b')
         plt.scatter(self.elev_coords[:,0], self.elev_coords[:,1], s=2, c = 'r') 
         plt.savefig(fnameplot)
-        plt.clf()
+        plt.close()
         
 
         fnameplot = self.folder +  '/recons_initialtopo/'+'scatter_.png' 
         plt.scatter(self.elev_coords[:,0], self.elev_coords[:,1], s=2)
         plt.savefig(fnameplot)
-        plt.clf()
+        plt.close()
 
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d') 
@@ -477,14 +477,14 @@ class PtReplica(multiprocessing.Process):
         fnameplot = self.folder +  '/recons_initialtopo/'+'scatter3d_elev_.png' 
         ax.scatter(self.elev_coords[:,0], self.elev_coords[:,1], self.real_elev_pts )
         plt.savefig(fnameplot)
-        plt.clf()
+        plt.close()
         
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d') 
         fnameplot = self.folder +  '/recons_initialtopo/'+'scatter3d_erdp_.png' 
         ax.scatter(self.erodep_coords[:,0], self.erodep_coords[:,1], self.real_erodep_pts )
         plt.savefig(fnameplot)
-        plt.clf()    
+        plt.close()    
 
         x = np.arange(0, self.sealevel_data.shape[0], 1)
         fig, ax =  plt.subplots() 
@@ -495,7 +495,7 @@ class PtReplica(multiprocessing.Process):
         fnameplot = self.folder +  '/recons_initialtopo/'+'sealevel_data.png' 
         ax.plot(x, y)
         plt.savefig(fnameplot)
-        plt.clf()    
+        plt.close()    
 
 
         samples = self.samples
