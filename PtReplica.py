@@ -230,8 +230,8 @@ class PtReplica(multiprocessing.Process):
     def run_badlands(self, input_vector):
         #Runs a badlands model with the specified inputs
 
-        print(self.real_elev.shape, ' real evel sh')
-        print(self.real_elev_pts.shape, ' real evel pt sh')
+        # print(self.real_elev.shape, ' real evel sh')
+        # print(self.real_elev_pts.shape, ' real evel pt sh')
  
         rain_regiontime = self.rain_region * self.rain_time # number of parameters for rain based on  region and time 
 
@@ -458,33 +458,33 @@ class PtReplica(multiprocessing.Process):
         self.init_show(self.real_elev, '/recons_initialtopo/real_evel', 1)
         self.init_show(self.init_elev, '/recons_initialtopo/expert_inittopo', 1)
 
-        fnameplot = self.folder +  '/recons_initialtopo/'+'scatter_erodep_.png' 
-        plt.scatter(self.erodep_coords[:,0], self.erodep_coords[:,1], s=2, c = 'b')
-        plt.scatter(self.elev_coords[:,0], self.elev_coords[:,1], s=2, c = 'r') 
-        plt.savefig(fnameplot)
-        plt.close()
+        # fnameplot = self.folder +  '/recons_initialtopo/'+'scatter_erodep_.png' 
+        # plt.scatter(self.erodep_coords[:,0], self.erodep_coords[:,1], s=2, c = 'b')
+        # plt.scatter(self.elev_coords[:,0], self.elev_coords[:,1], s=2, c = 'r') 
+        # plt.savefig(fnameplot)
+        # plt.close()
         
 
-        fnameplot = self.folder +  '/recons_initialtopo/'+'scatter_.png' 
-        plt.scatter(self.elev_coords[:,0], self.elev_coords[:,1], s=2)
-        plt.savefig(fnameplot)
-        plt.close()
+        # fnameplot = self.folder +  '/recons_initialtopo/'+'scatter_.png' 
+        # plt.scatter(self.elev_coords[:,0], self.elev_coords[:,1], s=2)
+        # plt.savefig(fnameplot)
+        # plt.close()
 
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d') 
+        # fig = plt.figure()
+        # ax = fig.add_subplot(111, projection='3d') 
 
-        print(self.real_elev_pts.shape, '  self.real_elev_pts')
-        fnameplot = self.folder +  '/recons_initialtopo/'+'scatter3d_elev_.png' 
-        ax.scatter(self.elev_coords[:,0], self.elev_coords[:,1], self.real_elev_pts )
-        plt.savefig(fnameplot)
-        plt.close()
+        # print(self.real_elev_pts.shape, '  self.real_elev_pts')
+        # fnameplot = self.folder +  '/recons_initialtopo/'+'scatter3d_elev_.png' 
+        # ax.scatter(self.elev_coords[:,0], self.elev_coords[:,1], self.real_elev_pts )
+        # plt.savefig(fnameplot)
+        # plt.close()
         
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d') 
-        fnameplot = self.folder +  '/recons_initialtopo/'+'scatter3d_erdp_.png' 
-        ax.scatter(self.erodep_coords[:,0], self.erodep_coords[:,1], self.real_erodep_pts )
-        plt.savefig(fnameplot)
-        plt.close()    
+        # fig = plt.figure()
+        # ax = fig.add_subplot(111, projection='3d') 
+        # fnameplot = self.folder +  '/recons_initialtopo/'+'scatter3d_erdp_.png' 
+        # ax.scatter(self.erodep_coords[:,0], self.erodep_coords[:,1], self.real_erodep_pts )
+        # plt.savefig(fnameplot)
+        # plt.close()    
 
         x = np.arange(0, self.sealevel_data.shape[0], 1)
         fig, ax =  plt.subplots() 
