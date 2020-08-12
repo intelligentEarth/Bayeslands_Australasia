@@ -367,7 +367,7 @@ class PtReplica(multiprocessing.Process):
             matches = np.count_nonzero(p_elev_ocean==r_elev_ocean)
             non_matches = p_elev_ocean.size -matches
 
-            # print('\n sim_interval[i] ', sim_interval[i], ' matches : ', matches ,'  non matches : ', non_matches, 'percentage non match', (non_matches/p_elev_ocean.size)*100)
+            print('\n sim_interval[i] ', self.sim_interval[i], ' matches : ', matches ,'  non matches : ', non_matches, 'percentage non match', (non_matches/p_elev_ocean.size)*100)
             fig = plt.figure()
             im = plt.imshow(p_elev_ocean, cmap='hot', interpolation='nearest')
             plt.colorbar(im)
@@ -391,7 +391,9 @@ class PtReplica(multiprocessing.Process):
             plt.colorbar(im)
             plt.savefig(self.folder +'/realtime_plots/' + str(self.ID) + '/'+str(self.sim_interval[i]) +'elev.png')
             plt.close()
-
+            print('p_elev_ocean', p_elev_ocean.shape)
+            print('r_elev_ocean', r_elev_ocean.shape)
+            print('self.real_elev', self.real_elev.size)
             tausq_ocean = np.sum(np.square(p_elev_ocean - r_elev_ocean))/self.real_elev.size  
             rmse_ocean[i] = tausq_ocean
             likelihood_elev_ocean  += np.sum(-0.5 * np.log(2 * math.pi * tausq_ocean) - 0.5 * np.square(p_elev_ocean - r_elev_ocean) /  tausq_ocean )
