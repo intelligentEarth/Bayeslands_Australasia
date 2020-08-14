@@ -47,8 +47,8 @@ def ProblemSetup():
     print('No. of points for erosion deposition likl (erdp_coords): ', erdp_coords.shape)
     erdp_coords = np.array(erdp_coords, dtype = 'int')
 
-    elev_coords = np.loadtxt(directory +"data/coord_final_elev.txt", )
-    # elev_coords = np.loadtxt(directory +"data/elev_coords.txt", )
+    # elev_coords = np.loadtxt(directory +"data/coord_final_elev.txt", )
+    elev_coords = np.loadtxt(directory +"data/elev_coords.txt", )
     print('No. of points for elevation likl (elev_coords)', elev_coords.shape)        
     elev_coords = np.array(elev_coords, dtype = 'int')
 

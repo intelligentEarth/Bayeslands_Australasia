@@ -3,7 +3,7 @@
 echo Running Revamped 	 
 
 problem=1
-replica=8
+replica=4
 
 samples=56
 swapint=2

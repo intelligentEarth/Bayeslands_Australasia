@@ -241,9 +241,11 @@ class ParallelTempering:
         self.burn_in = burn_in
         
         self.assign_temperatures()
-        xml_list = ['Examples/australia/AUSB001.xml','Examples/australia/AUSP1307.xml', 'Examples/australia/AUSP1310.xml',
-        'Examples/australia/AUSP1311.xml','Examples/australia/AUSP1312.xml', 'Examples/australia/AUSP1313.xml', 'Examples/australia/AUSP1314.xml',
-        'Examples/australia/AUSP1315.xml']
+        # xml_list = ['Examples/australia/AUSB004.xml','Examples/australia/AUSP1307.xml', 'Examples/australia/AUSP1310.xml',
+        # 'Examples/australia/AUSP1311.xml','Examples/australia/AUSP1312.xml', 'Examples/australia/AUSP1313.xml', 'Examples/australia/AUSP1314.xml',
+        # 'Examples/australia/AUSP1315.xml']
+        xml_list = ['Examples/australia_gda94/AUSB004.xml','Examples/australia_gda94/AUSB004.xml','Examples/australia_gda94/AUSB004.xml','Examples/australia_gda94/AUSB004.xml'
+        ,'Examples/australia_gda94/AUSB004.xml','Examples/australia_gda94/AUSB004.xml','Examples/australia_gda94/AUSB004.xml','Examples/australia_gda94/AUSB004.xml']
         
         for i in range(0, self.num_chains):
             self.vec_parameters =  np.random.uniform(minlimits_vec, maxlimits_vec)

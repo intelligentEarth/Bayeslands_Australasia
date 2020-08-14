@@ -315,10 +315,10 @@ class PtReplica(multiprocessing.Process):
         erodep_pts_vec = collections.OrderedDict()
         elev_pts_vec = collections.OrderedDict()
 
-        model.run_to_time(-1.489999e08, muted = True)
-        elev_, erodep_ = self.interpolateArray(model.FVmesh.node_coords[:, :2], model.elevation, model.cumdiff) 
+        # model.run_to_time(-1.489999e08, muted = True)
+        # elev_, erodep_ = self.interpolateArray(model.FVmesh.node_coords[:, :2], model.elevation, model.cumdiff) 
 
-        self.init_show(elev_, '/pred_plots/GMTinit_', self.ID )   
+        # self.init_show(elev_, '/pred_plots/GMTinit_', self.ID )   
 
         for x in range(len(self.sim_interval)):
             self.simtime = self.sim_interval[x]
@@ -347,6 +347,11 @@ class PtReplica(multiprocessing.Process):
 
         pred_elev_vec, pred_erodep_vec, pred_erodep_pts_vec, pred_elev_pts_vec = self.run_badlands(input_vector)
         
+        print('pred_elev_vec', pred_elev_vec[0].shape)
+        print('pred_erodep_vec', pred_erodep_vec[0].shape)
+        print('pred_erodep_pts_vec', pred_erodep_pts_vec[0].shape)
+        print('pred_elev_pts_vec', pred_elev_pts_vec[0].shape)
+
         self.vector_dump(pred_elev_vec, pred_erodep_vec, pred_erodep_pts_vec, pred_elev_pts_vec)
 
         likelihood_elev_ocean = 0
