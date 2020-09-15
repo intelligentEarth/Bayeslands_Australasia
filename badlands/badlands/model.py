@@ -552,20 +552,23 @@ class Model(object):
         # Create checkpoint files and write HDF5 output
         if self.input.udw == 0 or self.tNow == self.input.tEnd or self.tNow == self.force.next_display:
             if not muted:
-                checkPoints.write_checkpoints(self.input, self.recGrid, self.lGIDs, self.inIDs, self.tNow, \
-                                self.FVmesh, self.tMesh, self.force, self.flow, self.rain, \
-                                self.elevation, self.fillH, self.cumdiff, self.cumhill, self.cumfail, self.wavediff, \
+                print('It is in first if statement', '- Output step', self.outputStep)
+                checkPoints.write_checkpoints(self.input, self.recGrid, self.lGIDs, self.inIDs, self.tNow,
+                                self.FVmesh, self.tMesh, self.force, self.flow, self.rain,
+                                self.elevation, self.fillH, self.cumdiff, self.cumhill, self.cumfail, self.wavediff,
                                 self.outputStep, self.prop, self.mapero, self.cumflex)
 
             if self.straTIN is not None and self.outputStep % self.input.tmesh==0:
                 meshtime = time.clock()
                 if not muted:
+                    print('It is in second if statement', '- Output step', self.outputStep)
                     self.straTIN.write_hdf5_stratigraphy(self.lGIDs,self.outputStep)
                 print("   - Write sediment mesh output %0.02f seconds" % (time.clock() - meshtime))
 
             if self.carbTIN is not None and self.outputStep % self.input.tmesh==0:
                 meshtime = time.clock()
                 if not muted:
+                    print('It is in third if statement', '- Output step', self.outputStep)
                     self.carbTIN.write_hdf5_stratigraphy(self.lGIDs,self.outputStep)
                 print("   - Write carbonate mesh output %0.02f seconds" % (time.clock() - meshtime))
 
@@ -573,8 +576,12 @@ class Model(object):
             self.outputStep += 1
             if self.straTIN is not None:
                 if not muted:
-                    self.straTIN.write_hdf5_stratigraphy(self.lGIDs,self.outputStep-1)
+                    print('It is in fourth if statement', '- Output step', self.outputStep)
+                    # self.straTIN.write_hdf5_stratigraphy(self.lGIDs,self.outputStep-1)
+                    self.straTIN.write_hdf5_stratigraphy(self.lGIDs,self.outputStep)
             if self.carbTIN is not None:
                 if not muted:
-                    self.carbTIN.write_hdf5_stratigraphy(self.lGIDs,self.outputStep-1)
+                    print('It is in fifth if statement', '- Output step', self.outputStep)
+                    # self.carbTIN.write_hdf5_stratigraphy(self.lGIDs,self.outputStep-1)
+                    self.carbTIN.write_hdf5_stratigraphy(self.lGIDs,self.outputStep)
                 self.carbTIN.step += 1

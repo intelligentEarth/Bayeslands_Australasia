@@ -100,6 +100,7 @@ method = 1 # type of formaltion for inittopo construction (Method 1 showed bette
 class results_visualisation:
 
     def __init__(self, vec_parameters, sea_level, ocean_t, inittopo_expertknow, inittopo_estimated, rain_regiongrid, rain_timescale, len_grid,  wid_grid, num_chains, maxtemp, samples,swap_interval,fname, num_param  ,  groundtruth_elev,  groundtruth_erodep_pts , erodep_coords, elev_coords, simtime, sim_interval, resolu_factor,  xmlinput,  run_nb_str, init_elev ):
+        self.ID = 0
         self.swap_interval = swap_interval
         self.folder = fname
         self.maxtemp = maxtemp
@@ -123,9 +124,11 @@ class results_visualisation:
         self.vec_parameters = vec_parameters
         #self.realvalues  =  realvalues_vec 
         self.burn_in = burn_in
-        self.input = ['Examples/australia/AUSB001.xml','Examples/australia/AUSP1307.xml', 'Examples/australia/AUSP1310.xml',
-        'Examples/australia/AUSP1311.xml','Examples/australia/AUSP1312.xml', 'Examples/australia/AUSP1313.xml', 'Examples/australia/AUSP1314.xml',
-        'Examples/australia/AUSP1315.xml']
+        # self.input = ['Examples/australia/AUSB001.xml','Examples/australia/AUSP1307.xml', 'Examples/australia/AUSP1310.xml',
+        # 'Examples/australia/AUSP1311.xml','Examples/australia/AUSP1312.xml', 'Examples/australia/AUSP1313.xml', 'Examples/australia/AUSP1314.xml',
+        # 'Examples/australia/AUSP1315.xml']
+        self.input = ['Examples/australia_gda94/AUSB004.xml','Examples/australia_gda94/AUSB004.xml','Examples/australia_gda94/AUSB004.xml','Examples/australia_gda94/AUSB004.xml'
+        ,'Examples/australia_gda94/AUSB004.xml','Examples/australia_gda94/AUSB004.xml','Examples/australia_gda94/AUSB004.xml','Examples/australia_gda94/AUSB004.xml']
         # create queues for transfer of parameters between process chain
         self.geometric =  True
         self.total_swap_proposals = 0
@@ -929,12 +932,8 @@ class results_visualisation:
         x, y = np.hsplit(coords, 2)
         dx = (x[1]-x[0])[0]
 
-        if problem == 1:
-            nx = int((x.max() - x.min())/dx+1)
-            ny = int((y.max() - y.min())/dx+1)
-        else:
-            nx = int((x.max() - x.min())/dx+1 - 2)
-            ny = int((y.max() - y.min())/dx+1 - 2)
+        nx = int((x.max() - x.min())/dx+1 - 2)
+        ny = int((y.max() - y.min())/dx+1 - 2)
         xi = np.linspace(x.min(), x.max(), nx)
         yi = np.linspace(y.min(), y.max(), ny)
 
@@ -1050,10 +1049,11 @@ class results_visualisation:
         model.run_to_time(-1.489999e08, muted = False)
         elev_, erodep_ = self.interpolateArray(model.FVmesh.node_coords[:, :2], model.elevation, model.cumdiff) 
 
-        # self.init_show(elev_, '/pred_plots/GMTinit_', self.ID )   
+        self.init_show(elev_, '/pred_plots/GMTinit_', self.ID )   
 
         for x in range(len(self.sim_interval)):
             self.simtime = self.sim_interval[x]
+            print ('self.simtime', self.simtime)
             model.run_to_time(self.simtime, muted = False)
 
             elev, erodep = self.interpolateArray(model.FVmesh.node_coords[:, :2], model.elevation, model.cumdiff)
@@ -1296,7 +1296,7 @@ def main():
     # print('error_dict[min(error_dict)] ', error_dict[min(error_dict)])
     variables = error_dict[min(error_dict)]
     
-    np.savetxt('variables.txt', variables)
+    np.savetxt(fname +'variables.txt', variables)
     
     # variables[12:15] = [24000, 5, 0.01]
     # print('variables[:15]',variables[:15])
@@ -1313,9 +1313,9 @@ def main():
             pass
             # print ('the error was ', j[0], i)
 
-    print('min error in dict',min(error_dict_er))
+    print('min error in dict for er',min(error_dict_er))
     variables_er = error_dict_er[min(error_dict_er)]
-    np.savetxt('variables_er.txt', variables_er)
+    np.savetxt(fname +'variables_er.txt', variables_er)
 
 
     pred_elev_opt, pred_erodep_opt, pred_erodep_pts_opt, pred_elev_pts_opt = res.run_badlands(error_dict[min(error_dict)])

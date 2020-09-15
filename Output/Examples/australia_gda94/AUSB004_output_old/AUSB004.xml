@@ -439,9 +439,8 @@
          -->
         <!--  Number of points along the X-axis - (optional) -->
         <!-- flex_dx>50000</flex_dx -->
-        
-	<!--  Mantle density [km/m3]  -->
-        <dmantle>3400</dmantle>
+        <!--  Mantle density [km/m3]  -->
+        <dmantle>3500</dmantle>
         <!--  Sediment density [km/m3]  -->
         <dsediment>2700</dsediment>
         <!--  Youngs Modulus [Pa]  -->
